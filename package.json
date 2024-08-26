@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "Node index"
+    "start": "nodemon index"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
     "express": "^4.19.2",
     "mongodb": "^6.8.0",
     "node-telegram-bot-api": "^0.66.0",
+    "nodemon": "^3.0.1",
     "telegraf": "^4.16.3"
   }
 }
