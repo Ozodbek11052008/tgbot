@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Comment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        input, textarea {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="movie-title"></h1>
+    <h2>Comment by <span id="username"></span></h2>
+    <textarea id="comment" rows="4" placeholder="Write your comment here..."></textarea><br>
+    <button onclick="submitComment()">Submit Comment</button>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
+        const movie = urlParams.get('movie');
+
+        document.getElementById('username').innerText = `@${username}`;
+        document.getElementById('movie-title').innerText = `Movie: ${movie}`;
+
+        async function submitComment() {
+            const comment = document.getElementById('comment').value;
+
+            if (!comment) {
+                alert('Please write a comment before submitting.');
+                return;
+            }
+
+            const response = await fetch('/save-comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, movie, comment })
+            });
+
+            if (response.ok) {
+                alert('Comment submitted successfully!');
+            } else {
+                alert('Failed to submit comment.');
+            }
+        }
+    </script>
+</body>
+</html>

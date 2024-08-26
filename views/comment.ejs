@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comment on <%= movie %></title>
+</head>
+<body>
+    <h1>Comment on <%= movie %></h1>
+    <form action="/comment" method="POST">
+        <input type="hidden" name="movie" value="<%= movie %>">
+        <label for="username">Your Telegram Username:</label>
+        <input type="text" id="username" name="username" value="<%= username %>" readonly>
+        <br>
+        <label for="comment">Your Comment:</label>
+        <textarea id="comment" name="comment" required></textarea>
+        <br>
+        <button type="submit">Submit Comment</button>
+    </form>
+</body>
+</html>
+
+
+If you want the Telegram bot to automatically open a web app within Telegram rather than sending a link, you can use the **Telegram Web Apps** feature. This allows you to create an interactive experience directly within the Telegram app, using a web page as a custom keyboard button.
+
+### **Steps to Implement Telegram Web Apps**
+
+#### **1. Setup Your Web App**
+
+You need to host your web app somewhere accessible over HTTPS. For this example, let’s assume you have your web app hosted at `https://yourdomain.com`.
+
+#### **2. Update Your Web Application**
+
+Make sure your web application is set up to handle the Telegram Web Apps SDK. The SDK provides context about the user and the bot.
+
+**Add Telegram Web Apps SDK to Your `comment.ejs` Page:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comment on <%= movie %></title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Telegram Web Apps SDK
+            window.Telegram.WebApp.init();
+
+            // Set the title and other configurations
+            window.Telegram.WebApp.setTitle('Comment on <%= movie %>');
+        });
+    </script>
+</head>
+<body>
+    <h1>Comment on <%= movie %></h1>
+    <p>Telegram Profile: <a href="<%= profileLink %>" target="_blank"><%= username %></a></p>
+    <form action="/comment" method="POST">
+        <input type="hidden" name="movie" value="<%= movie %>">
+        <input type="hidden" name="username" value="<%= username %>">
+        <label for="comment">Your Comment:</label>
+        <textarea id="comment" name="comment" required></textarea>
+        <br>
+        <button type="submit">Submit Comment</button>
+    </form>
+</body>
+</html>
