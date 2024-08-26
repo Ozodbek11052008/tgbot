@@ -22,7 +22,7 @@ const movies = ['Batman', 'Joker', 'Superman', 'Marvel'];
 bot.start((ctx) => {
     const movieButtons = movies.map((movie) => ({
         text: movie,
-        web_app: { url: `https://ozimooviestest.onrender.com/webapp.html?username=${ctx.from.username}&movie=${movie}` } // Replace YOUR_SERVER_URL with your actual server URL
+        web_app: { url: `https://tgbot-t567.onrender.com/webapp.html?username=${ctx.from.username}&movie=${movie}` } // Replace YOUR_SERVER_URL with your actual server URL
     }));
 
     ctx.reply('Choose a movie:', {
