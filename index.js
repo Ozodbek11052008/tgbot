@@ -1,10 +1,11 @@
+
 const { Telegraf } = require('telegraf');
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const Comment = require('./models/Comment');
 
-const bot = new Telegraf('7256535711:AAG9UDLj6GES5o8O2hH0BRCFBP4CgsaOfV8'); // Replace with your bot token
+const bot = new Telegraf('7256535711:AAG9UDLj6GES5o8O2hH0BRCFBP4CgsaOfV8');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -15,14 +16,31 @@ mongoose.connect('mongodb+srv://yosh_dasturchi:11052008ozod@cluster0.qih2a9m.mon
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Movie options
-const movies = ['Batman', 'Joker', 'Superman', 'Marvel'];
+// Function to get user photo URL
+async function getUserPhoto(ctx) {
+    try {
+        const userPhotos = await ctx.telegram.getUserProfilePhotos(ctx.from.id);
+        if (userPhotos.total_count > 0) {
+            const fileId = userPhotos.photos[0][0].file_id;
+            const file = await ctx.telegram.getFileLink(fileId);
+            return file.href;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error('Error fetching user photo:', error);
+        return null;
+    }
+}
 
 // Start command
-bot.start((ctx) => {
+bot.start(async (ctx) => {
+    const username = ctx.from.username;
+    const photoUrl = await getUserPhoto(ctx);
+
     const movieButtons = movies.map((movie) => ({
         text: movie,
-        web_app: { url: `https://tgbot-t567.onrender.com/webapp.html?username=${ctx.from.username}&movie=${movie}` } // Replace YOUR_SERVER_URL with your actual server URL
+        web_app: { url: `https://tgbot-t567.onrender.com/webapp.html?username=${username}&photoUrl=${encodeURIComponent(photoUrl)}&movie=${movie}` }
     }));
 
     ctx.reply('Choose a movie:', {
@@ -42,6 +60,16 @@ app.post('/save-comment', async (req, res) => {
         res.status(200).send('Comment saved successfully!');
     } catch (error) {
         res.status(500).send('Failed to save comment.');
+    }
+});
+
+// API to get comments
+app.get('/get-comments', async (req, res) => {
+    try {
+        const comments = await Comment.find().sort({ createdAt: -1 });
+        res.json(comments);
+    } catch (error) {
+        res.status(500).send('Failed to retrieve comments.');
     }
 });
 

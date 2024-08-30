@@ -19,21 +19,37 @@
             padding: 10px 20px;
             font-size: 16px;
         }
+        img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <h1 id="movie-title"></h1>
     <h2>Comment by <span id="username"></span></h2>
+    <img id="user-photo" src="" alt="User Photo" />
     <textarea id="comment" rows="4" placeholder="Write your comment here..."></textarea><br>
     <button onclick="submitComment()">Submit Comment</button>
+
+    <h2>Comments:</h2>
+    <div id="comments-section"></div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username');
         const movie = urlParams.get('movie');
+        const photoUrl = urlParams.get('photoUrl');
 
         document.getElementById('username').innerText = `@${username}`;
         document.getElementById('movie-title').innerText = `Movie: ${movie}`;
+        if (photoUrl) {
+            document.getElementById('user-photo').src = photoUrl;
+        } else {
+            document.getElementById('user-photo').style.display = 'none';
+        }
 
         async function submitComment() {
             const comment = document.getElementById('comment').value;
@@ -43,7 +59,7 @@
                 return;
             }
 
-            const response = await fetch('/save-comment', {
+            const response = await fetch('https://ozimooviestest.onrender.com/save-comment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -53,10 +69,27 @@
 
             if (response.ok) {
                 alert('Comment submitted successfully!');
+                loadComments();
             } else {
                 alert('Failed to submit comment.');
             }
         }
+
+        async function loadComments() {
+            const response = await fetch(`https://ozimooviestest.onrender.com/get-comments?movie=${movie}`);
+            const comments = await response.json();
+
+            const commentsSection = document.getElementById('comments-section');
+            commentsSection.innerHTML = ''; // Clear previous comments
+
+            comments.forEach((comment) => {
+                const commentDiv = document.createElement('div');
+                commentDiv.innerHTML = `<strong>@${comment.username}</strong>: ${comment.comment}`;
+                commentsSection.appendChild(commentDiv);
+            });
+        }
+
+        loadComments();
     </script>
 </body>
 </html>
