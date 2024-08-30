@@ -32,7 +32,7 @@ async function getUserPhoto(ctx) {
         return null;
     }
 }
-
+let moovies = ["batman","joker","superman";
 // Start command
 bot.start(async (ctx) => {
     const username = ctx.from.username;
