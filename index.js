@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://yosh_dasturchi:11052008ozod@cluster0.qih2a9m.mongodb.net', { useNewUrlParser: true, useUnifiedTopology: true });
-
+let moovies = ['batman', 'spiderman', 'joker']
 // Serve the web app
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -38,7 +38,7 @@ bot.start(async (ctx) => {
     const username = ctx.from.username;
     const photoUrl = await getUserPhoto(ctx);
 
-    const movieButtons = movies.map((movie) => ({
+    const movieButtons = moovies.map((movie) => ({
         text: movie,
         web_app: { url: `https://tgbot-t567.onrender.com/webapp.html?username=${username}&photoUrl=${encodeURIComponent(photoUrl)}&movie=${movie}` }
     }));
