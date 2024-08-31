@@ -31,8 +31,7 @@ async function getUserPhoto(ctx) {
         console.error('Error fetching user photo:', error);
         return null;
     }
-}
-let moovies = ["batman","joker","superman";
+
 // Start command
 bot.start(async (ctx) => {
     const username = ctx.from.username;
